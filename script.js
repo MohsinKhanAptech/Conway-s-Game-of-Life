@@ -5,10 +5,10 @@
 let width = 800;
 let height = 800;
 
-let cellSize = 20;
+let cellSize = 10;
 let cellRadius = 0;
 
-let intervalDelay = 1000;
+let intervalDelay = 100;
 
 let rowsCount = width / cellSize;
 let columnsCount = height / cellSize;
@@ -30,9 +30,10 @@ function main() {
   populateTable();
 
   drawTable();
+
+  setInterval(progressGeneration, intervalDelay);
 }
 
-setInterval(main, intervalDelay);
 main();
 
 //
@@ -56,7 +57,11 @@ function populateTable() {
   for (let i = 0; i < rowsCount; i++) {
     let columns = [];
     for (let j = 0; j < columnsCount; j++) {
-      columns.push(getRandomCellState());
+      // the chance of cell being alive is 50/2/2 = 12.5%
+      if (getRandomCellState() && getRandomCellState())
+        columns.push(getRandomCellState());
+
+      columns.push(0);
     }
     rows.push(columns);
   }
@@ -73,6 +78,62 @@ function drawTable() {
     });
   });
   inactiveCellsCount = cellsCount - activeCellsCount;
+}
+
+//
+function progressGeneration() {
+  rows.forEach((row, rowIndex) => {
+    row.forEach((_column, colIndex) => {
+      let nearingActiveCells = 0;
+      let cellStatus = rows[rowIndex][colIndex];
+
+      // [1][2][3]
+      // [4][x][5]
+      // [6][7][8]
+
+      if (rowIndex !== 0) {
+        if (rows[rowIndex - 1][colIndex - 1])
+          nearingActiveCells += rows[rowIndex - 1][colIndex - 1];
+        if (rows[rowIndex - 1][colIndex - 0])
+          nearingActiveCells += rows[rowIndex - 1][colIndex - 0];
+        if (rows[rowIndex - 1][colIndex + 1])
+          nearingActiveCells += rows[rowIndex - 1][colIndex + 1];
+      }
+
+      if (rows[rowIndex - 0][colIndex - 1])
+        nearingActiveCells += rows[rowIndex - 0][colIndex - 1];
+      if (rows[rowIndex - 0][colIndex + 1])
+        nearingActiveCells += rows[rowIndex - 0][colIndex + 1];
+
+      if (rowIndex !== rowsCount - 1) {
+        if (rows[rowIndex + 1][colIndex - 1])
+          nearingActiveCells += rows[rowIndex + 1][colIndex - 1];
+        if (rows[rowIndex + 1][colIndex - 0])
+          nearingActiveCells += rows[rowIndex + 1][colIndex - 0];
+        if (rows[rowIndex + 1][colIndex + 1])
+          nearingActiveCells += rows[rowIndex + 1][colIndex + 1];
+      }
+
+      if (nearingActiveCells > 3 || nearingActiveCells < 2) {
+        rows[rowIndex][colIndex] = 0;
+        activeCellsCount--;
+      } else if (nearingActiveCells === 3) {
+        rows[rowIndex][colIndex] = 1;
+        activeCellsCount++;
+      } else if (nearingActiveCells === 2 && cellStatus) {
+        rows[rowIndex][colIndex] = 1;
+        activeCellsCount++;
+      } else {
+        rows[rowIndex][colIndex] = 0;
+        activeCellsCount--;
+      }
+    });
+  });
+
+  inactiveCellsCount = cellsCount - activeCellsCount;
+
+  drawBackground();
+  drawTable();
 }
 
 //
