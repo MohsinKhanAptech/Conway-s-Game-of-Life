@@ -52,22 +52,6 @@ function drawCell(x, y, size = cellSize, radius = cellRadius) {
 }
 
 //
-function populateTable() {
-  rows = [];
-  for (let i = 0; i < rowsCount; i++) {
-    let columns = [];
-    for (let j = 0; j < columnsCount; j++) {
-      // the chance of cell being alive is 50/2/2 = 12.5%
-      if (getRandomCellState() && getRandomCellState())
-        columns.push(getRandomCellState());
-
-      columns.push(0);
-    }
-    rows.push(columns);
-  }
-}
-
-//
 function drawTable() {
   rows.forEach((row, rowIndex) => {
     row.forEach((column, colIndex) => {
@@ -78,6 +62,23 @@ function drawTable() {
     });
   });
   inactiveCellsCount = cellsCount - activeCellsCount;
+}
+
+//
+function populateTable() {
+  rows = [];
+  for (let i = 0; i < rowsCount; i++) {
+    let columns = [];
+    for (let j = 0; j < columnsCount; j++) {
+      // the chance of cell being alive is 50/2/2 = 12.5%
+      if (getRandomCellState() && getRandomCellState()) {
+        columns.push(getRandomCellState());
+      } else {
+        columns.push(0);
+      }
+    }
+    rows.push(columns);
+  }
 }
 
 //
