@@ -38,7 +38,7 @@ main();
 
 //
 function drawBackground() {
-  ctx.fillStyle = "rgba(255,255,255,1)";
+  ctx.fillStyle = "rgba(60,60,60,1)";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 
@@ -51,7 +51,7 @@ function drawCell(x, y, size = cellSize, radius = cellRadius) {
 
 //
 function drawTable() {
-  ctx.fillStyle = "rgba(0,0,0,0.4)";
+  ctx.fillStyle = "rgba(255,255,255,1)";
   rows.forEach((row, rowIndex) => {
     row.forEach((column, colIndex) => {
       if (column) {
