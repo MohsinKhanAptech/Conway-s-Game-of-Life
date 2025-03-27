@@ -92,56 +92,45 @@ function progressGeneration() {
       // [6][7][8]
 
       if (rowIndex !== 0) {
-        if (rows[rowIndex - 1][colIndex - 1])
-          nearingActiveCells += rows[rowIndex - 1][colIndex - 1];
-        if (rows[rowIndex - 1][colIndex - 0])
-          nearingActiveCells += rows[rowIndex - 1][colIndex - 0];
-        if (rows[rowIndex - 1][colIndex + 1])
-          nearingActiveCells += rows[rowIndex - 1][colIndex + 1];
+        if (rows[rowIndex - 1][colIndex - 1]) nearingActiveCells++; // [1]
+        if (rows[rowIndex - 1][colIndex - 0]) nearingActiveCells++; // [2]
+        if (rows[rowIndex - 1][colIndex + 1]) nearingActiveCells++; // [3]
       }
 
-      if (rows[rowIndex - 0][colIndex - 1])
-        nearingActiveCells += rows[rowIndex - 0][colIndex - 1];
-      if (rows[rowIndex - 0][colIndex + 1])
-        nearingActiveCells += rows[rowIndex - 0][colIndex + 1];
+      if (rows[rowIndex - 0][colIndex - 1]) nearingActiveCells++; // [4]
+      if (rows[rowIndex - 0][colIndex + 1]) nearingActiveCells++; // [5]
 
       if (rowIndex !== rowsCount - 1) {
-        if (rows[rowIndex + 1][colIndex - 1])
-          nearingActiveCells += rows[rowIndex + 1][colIndex - 1];
-        if (rows[rowIndex + 1][colIndex - 0])
-          nearingActiveCells += rows[rowIndex + 1][colIndex - 0];
-        if (rows[rowIndex + 1][colIndex + 1])
-          nearingActiveCells += rows[rowIndex + 1][colIndex + 1];
+        if (rows[rowIndex + 1][colIndex - 1]) nearingActiveCells++; // [6]
+        if (rows[rowIndex + 1][colIndex - 0]) nearingActiveCells++; // [7]
+        if (rows[rowIndex + 1][colIndex + 1]) nearingActiveCells++; // [8]
       }
 
       if (cellStatus) {
         if (nearingActiveCells < 2 || nearingActiveCells > 3) {
           // Any live cell with fewer than two live neighbours dies, as if by underpopulation.
           rows[rowIndex][colIndex] = 0;
-          activeCellsCount--;
         } else if (cellStatus && nearingActiveCells > 3) {
           // Any live cell with more than three live neighbours dies, as if by overpopulation.
           rows[rowIndex][colIndex] = 0;
-          activeCellsCount--;
         } else if (nearingActiveCells === 2 || nearingActiveCells === 3) {
           // Any live cell with two or three live neighbours lives on to the next generation.
           rows[rowIndex][colIndex] = 1;
-          activeCellsCount++;
+        } else {
+          // else cell is dead.
+          rows[rowIndex][colIndex] = 0;
         }
       } else {
         if (nearingActiveCells === 3) {
           // Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
           rows[rowIndex][colIndex] = 1;
-          activeCellsCount++;
         } else {
+          // else cell is dead.
           rows[rowIndex][colIndex] = 0;
-          activeCellsCount--;
         }
       }
     });
   });
-
-  inactiveCellsCount = cellsCount - activeCellsCount;
 
   drawBackground();
   drawTable();
